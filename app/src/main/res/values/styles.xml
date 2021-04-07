@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Toolbar theme. -->
+    <style name="ToolBarStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+
+    </style>
+</resources>
