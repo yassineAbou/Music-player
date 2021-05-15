@@ -1,170 +1,178 @@
 package com.example.mynavdrawer.Controllers.Activities;
 
+
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.mynavdrawer.Controllers.Fragments.NewsFragment;
-import com.example.mynavdrawer.Controllers.Fragments.ParamsFragment;
-import com.example.mynavdrawer.Controllers.Fragments.ProfileFragment;
+import com.bumptech.glide.Glide;
+import com.example.mynavdrawer.Controllers.Fragments.MusicsFragment;
+import com.example.mynavdrawer.Controllers.Fragments.PlaylistFragment;
+import com.example.mynavdrawer.Models.MusicFiles;
 import com.example.mynavdrawer.R;
+import com.example.mynavdrawer.Views.MusicAdapter;
 import com.example.mynavdrawer.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
+import java.util.ArrayList;
 
+import static com.example.mynavdrawer.Controllers.Fragments.MusicsFragment.contacts;
+
+@SuppressWarnings("ALL")
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ActivityMainBinding mMainBinding;
 
+
+    ActivityMainBinding binding;
     //FOR FRAGMENTS
-    //Declare fragment handled by Navigation Drawer
-    private Fragment fragmentNews;
-    private Fragment fragmentProfile;
-    private Fragment fragmentParams;
-
+    private Fragment fragmentMusics;
+    private Fragment fragmentPlaylist;
     //FOR DATAS
-    //Identify each fragment with a number
-    private static final int FRAGMENT_NEWS = 0;
-    private static final int FRAGMENT_PROFILE = 1;
-    private static final int FRAGMENT_PARAMS = 2;
+    private static final int FRAGMENT_MUSICS = 1;
+    private static final int FRAGMENT_PLAYLIST = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
-        View view =mMainBinding.getRoot();
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
         setContentView(view);
 
         // Configure all views
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
-
-        // 2 - Show First Fragment
+        // Show First Fragment
         this.showFirstFragment();
+
     }
 
     @Override
     public void onBackPressed() {
-        //Handle back click to close menu
-        if (mMainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
+        // Handle back click to close menu
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
 
+
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle Navigation Item Click
+    public boolean onNavigationItemSelected(MenuItem item) {
+
         int id = item.getItemId();
 
+        // Show fragment after user clicked on a menu item
         switch (id){
-            case R.id.drawer_news :
-                showFragment(FRAGMENT_NEWS);
+            case R.id.drawer_musics:
+                this.showFragment(FRAGMENT_MUSICS);
                 break;
-            case R.id.drawer_profile:
-                showFragment(FRAGMENT_PROFILE);
+            case R.id.drawer_playlist:
+                this.showFragment(FRAGMENT_PLAYLIST);
                 break;
-            case R.id.drawer_settings:
-                showFragment(FRAGMENT_PARAMS);
-                break;
+
             default:
                 break;
         }
 
-        mMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
     }
+
+
 
     // ---------------------
     // CONFIGURATION
     // ---------------------
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==R.id.action_search) return true;
+        return super.onOptionsItemSelected(item);
 
-    //Configure Toolbar
-    private void configureToolBar() {
-        setSupportActionBar(mMainBinding.toolbar);
     }
 
-    //Configure Drawer Layout
+    // Configure Toolbar
+    private void configureToolBar(){
+        setSupportActionBar(binding.toolbar);
+    }
+
+    // Configure Drawer Layout
     private void configureDrawerLayout(){
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mMainBinding.drawerLayout, mMainBinding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mMainBinding.drawerLayout.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout,
+                binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
 
-    //Configure NavigationView
+    // Configure NavigationView
     private void configureNavigationView(){
-        mMainBinding.navView.setNavigationItemSelectedListener(this);
+        binding.navView.setNavigationItemSelectedListener(this);
     }
 
     // ---------------------
     // FRAGMENTS
     // ---------------------
 
-    //Show first fragment when activity is created
+    // Show first fragment when activity is created
     private void showFirstFragment(){
         Fragment visibleFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
         if (visibleFragment == null){
-            //Show News Fragment
-            this.showFragment(FRAGMENT_NEWS);
-            //Mark as selected the menu item corresponding to NewsFragment
-            mMainBinding.navView.getMenu().getItem(0).setChecked(true);
+            // Show News Fragment
+            this.showFragment(FRAGMENT_MUSICS);
+            // Mark as selected the menu item corresponding to MusicsFragment
+            binding.navView.setCheckedItem(R.id.drawer_musics);
         }
     }
 
-    //Show fragment according an Identifier
-    private void showFragment(int fragmentIdentifier) {
-        switch (fragmentIdentifier) {
-            case FRAGMENT_NEWS :
-                this.showNewsFragment();
+    // Show fragment according an Identifier
+    private void showFragment(int fragmentIdentifier){
+        switch (fragmentIdentifier){
+            case FRAGMENT_MUSICS:
+                this.showMusicsFragment();
                 break;
-            case FRAGMENT_PROFILE:
-                this.showProfileFragment();
-                break;
-            case FRAGMENT_PARAMS:
-                this.showParamsFragment();
+            case FRAGMENT_PLAYLIST:
+                this.showPlaylistFragment();
                 break;
             default:
                 break;
         }
     }
 
-    //Create each fragment page and show it
-    private void showNewsFragment() {
-        if (this.fragmentNews == null) {
-            this.fragmentNews = NewsFragment.newInstance();
-            this.startTransactionFragment(this.fragmentNews);
-        }
+    // ---
+
+    // Create each fragment page and show it
+    private void showPlaylistFragment(){
+        if (this.fragmentPlaylist == null) this.fragmentPlaylist = PlaylistFragment.newInstance();
+        this.startTransactionFragment(this.fragmentPlaylist);
+        getSupportActionBar().setTitle("Playlist");
     }
 
-    private void showParamsFragment(){
-        if (this.fragmentParams == null) {
-            this.fragmentParams = ParamsFragment.newInstance();
-            this.startTransactionFragment(this.fragmentParams);
-        }
+    private void showMusicsFragment(){
+        if (this.fragmentMusics == null) this.fragmentMusics = MusicsFragment.newInstance();
+        this.startTransactionFragment(this.fragmentMusics);
+        getSupportActionBar().setTitle("Musics");
     }
 
-    private void showProfileFragment() {
-        if (this.fragmentProfile == null) {
-            this.fragmentProfile = ProfileFragment.newInstance();
-        this.startTransactionFragment(this.fragmentProfile);
-       }
-    }
+    // ---
 
-    //Generic method that will replace and show a fragment inside the MainActivity Frame Layout
-    private void startTransactionFragment(Fragment fragment) {
-        if (!fragment.isVisible()) {
+    // Generic method that will replace and show a fragment inside the MainActivity Frame Layout
+    private void startTransactionFragment(Fragment fragment){
+        if (!fragment.isVisible()){
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.frame_layout, fragment).commit();
         }
     }
+
 
 }

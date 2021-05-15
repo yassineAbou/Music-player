@@ -3,24 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/drawer_news"
-            android:icon="@drawable/ic_baseline_dashboard_24"
-            android:title="News" />
-    </group>
 
-    <item android:title="Configuration">
+
+    <item android:title="Music Player">
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/drawer_profile"
-                    android:icon="@drawable/ic_baseline_account_box_24"
-                    android:title="Profile" />
+                    android:id="@+id/drawer_musics"
+                    android:icon="@drawable/ic_library_music"
+                    android:title="Musics" />
                 <item
-                    android:id="@+id/drawer_settings"
-                    android:icon="@drawable/ic_baseline_settings_applications_24"
-                    android:title="Parameters" />
+                    android:id="@+id/drawer_playlist"
+                    android:icon="@drawable/ic_playlist_add"
+                    android:title="Playlist" />
             </group>
         </menu>
     </item>
